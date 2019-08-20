@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
-cp ~/.config/nixpkgs/home.nix ./
+cp -r ~/.config/nixpkgs/* ./
 git diff

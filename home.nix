@@ -4,6 +4,23 @@
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
 
+  xsession = {
+    enable = true;
+    windowManager.i3 = {
+      enable = true;
+      config = {
+        keybindings = {};  # Appended from i3.config below.
+      };
+      extraConfig = builtins.readFile ./i3.config;
+    };
+  };
+
+  home.keyboard = {
+    layout = "us";
+    variant = "dvp";
+    options = [ "compose:ralt" ];
+  };
+
   home.sessionVariables = {
     EDITOR = "vim";
     TERM = "xterm-256color";
@@ -30,6 +47,15 @@
             repo = "vim-wordy";
             rev = "4e097f5552731229cbda3ed7b55004b56c2b84f4";
             sha256 = "1c235faydn95s4nwa4in6ag58r00nclqxncrlvby2kcpm8l2r0kz";
+          };
+        };
+        tmuxline = vimUtils.buildVimPlugin {
+          name = "tmuxline";
+          src = fetchFromGitHub {
+            owner = "edkolev";
+            repo = "tmuxline.vim";
+            rev = "6386ac13a2f6360cf3cf34f22772a82e7e45843e";
+            sha256 = "0lqi7rvafwamdv1gn855nw24z711yj6kmhagw023pmzlrcjw07w9";
           };
         };
       };
@@ -60,6 +86,10 @@
             # ]s [s to go through problematic
             customPlugins.vim-wordy
 
+            customPlugins.tmuxline
+
+            fzf-vim fzfWrapper
+
             # TODO(robinp):
             # fzf tabular repeat supertab easymotion tmux-navigator fugitive surround tmuxline
           ];
@@ -87,7 +117,9 @@
 
       fira-code  # Note: fire-code supports powerline (/airline)
 
-      thefuck
+      dmenu  # For i3
+
+      thefuck fzf tree
       multitail
       curl wget nmap
       xscreensaver
@@ -144,7 +176,7 @@
   };
 
   services.random-background = {
-    enable = false;
+    enable = true;
     imageDirectory = "%h/backgrounds";
     interval = "1h";
   };
