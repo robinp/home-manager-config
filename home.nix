@@ -119,8 +119,9 @@
 
       dmenu  # For i3
 
+      scrot imagemagick
       thefuck fzf tree
-      multitail
+      htop multitail
       curl wget nmap
       xscreensaver
       youtube-dl
