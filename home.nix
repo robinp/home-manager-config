@@ -1,8 +1,23 @@
 { config, pkgs, ... }:
 
+with {
+  patchedTimewarriorHook = pkgs.stdenv.mkDerivation {
+    name = "my-timewarrior-hook";
+    buildInputs = [ pkgs.python ];
+    buildCommand = ''
+      cp ${pkgs.timewarrior}/share/doc/timew/ext/on-modify.timewarrior $out
+      chmod +x $out
+      patchShebangs $out
+    '';
+    unpackPhase = "";
+  };
+};
 {
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  # Use the .bashrc contents below rather
+  # programs.bash.shellAliases = { };
 
   xsession = {
     enable = true;
@@ -69,8 +84,10 @@
             # To highlight eol-spaces etc.
             vim-better-whitespace
 
+            undotree
             bufexplorer
             gitgutter
+            tagbar
 
             molokai
             airline vim-airline-themes
@@ -114,23 +131,45 @@
       brave
 
       myvim
+      ctags
 
-      fira-code  # Note: fire-code supports powerline (/airline)
+      fira-code  # Note: fira-code supports powerline (/airline)
 
       dmenu  # For i3
 
+      evince
+      mplayer sox
+      ranger mc
+      freemind
+      timewarrior
+
       scrot imagemagick
-      thefuck fzf tree
-      htop multitail
+      thefuck fzf tree ripgrep
+      zip unzip
+      mupdf
+      htop multitail ncdu
       curl wget nmap
       xscreensaver
       youtube-dl
+
+      qt5.full sigil calibre
       # xdotool
     ];
 
   home.file.".bashrc".text = ''
       eval $(thefuck --alias)
+      alias d="dict --host localhost"
+      alias gs="git status"
+      alias gsi="git status --ignored"
+      alias gsip="git status --ignored --porcelain | grep '!!'"
+
   '';
+
+  home.file.taskhook = {
+    source = "${patchedTimewarriorHook}";
+    target = ".local/share/task/hooks/on-modify.timewarrior";
+    executable = true;
+  };
 
   programs.git = {
     enable = true;
@@ -180,5 +219,9 @@
     enable = true;
     imageDirectory = "%h/backgrounds";
     interval = "1h";
+  };
+
+  services.xscreensaver = {
+    enable = true;
   };
 }
