@@ -138,7 +138,7 @@ with {
       dmenu  # For i3
 
       evince
-      mplayer sox
+      mplayer sox zoom-us
       ranger mc
       freemind
       timewarrior
