@@ -39,6 +39,7 @@ with {
   home.sessionVariables = {
     EDITOR = "vim";
     TERM = "xterm-256color";
+    TERMINAL = "urxvt";
   };
 
   home.packages =
