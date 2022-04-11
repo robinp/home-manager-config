@@ -84,6 +84,10 @@ with {
             # To highlight eol-spaces etc.
             vim-better-whitespace
 
+            vim-pencil
+
+            vim-nix
+
             undotree
             bufexplorer
             gitgutter
@@ -128,14 +132,17 @@ with {
       };
     };
     [
-      brave
-
       myvim
       ctags
+      python3
 
       fira-code  # Note: fira-code supports powerline (/airline)
+      source-serif-pro
+      source-sans-pro
 
       dmenu  # For i3
+
+      chromium
 
       evince
       mplayer sox zoom-us
@@ -143,7 +150,9 @@ with {
       freemind
       timewarrior
 
+      gimp inkscape
       scrot imagemagick
+
       thefuck fzf tree ripgrep
       zip unzip
       mupdf
@@ -153,7 +162,10 @@ with {
       youtube-dl
 
       qt5.full sigil calibre
+      xclip
       # xdotool
+
+      taskjuggler
     ];
 
   home.file.".bashrc".text = ''
