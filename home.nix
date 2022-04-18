@@ -134,6 +134,7 @@ with {
     };
     [
       myvim
+      emacs fd
       ctags
       python3
 
@@ -167,6 +168,8 @@ with {
       # xdotool
 
       taskjuggler
+
+      docker docker-compose
     ];
 
   home.file.".bashrc".text = ''
@@ -175,7 +178,7 @@ with {
       alias gs="git status"
       alias gsi="git status --ignored"
       alias gsip="git status --ignored --porcelain | grep '!!'"
-
+      alias ty="task +py"
   '';
 
   home.file.taskhook = {
