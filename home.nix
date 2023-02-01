@@ -30,6 +30,10 @@ with {
     };
   };
 
+  home.stateVersion = "21.11";
+  home.username = "ron";
+  home.homeDirectory= "/home/ron";
+
   home.keyboard = {
     layout = "us";
     variant = "dvp";
@@ -134,7 +138,7 @@ with {
     };
     [
       myvim
-      emacs fd
+      emacs fd haskell-language-server
       ctags
       python3
 
@@ -144,7 +148,11 @@ with {
 
       dmenu  # For i3
 
-      chromium
+      urxvt_font_size
+
+      chromium dig mosh
+
+      discord teamviewer
 
       evince
       mplayer sox zoom-us
@@ -162,8 +170,12 @@ with {
       curl wget nmap
       xscreensaver
       youtube-dl
+      wireshark
+      _1password
+      _1password-gui
 
-      qt5.full sigil calibre
+      # qt5.full  # why did we need this in the first place?
+      sigil calibre
       xclip
       # xdotool
 
@@ -179,12 +191,89 @@ with {
       alias gsi="git status --ignored"
       alias gsip="git status --ignored --porcelain | grep '!!'"
       alias ty="task +py"
+      export LS_COLORS="di=36:ln=35:so=32:pi=33:ex=31:bd=34;46:cd=34;43:su=30;41:sg=30;46:tw=30;42:ow=30;43"
   '';
 
   home.file.taskhook = {
     source = "${patchedTimewarriorHook}";
     target = ".local/share/task/hooks/on-modify.timewarrior";
     executable = true;
+  };
+
+  programs.autorandr = {
+    enable = true;
+		profiles = with
+			{ EDID_LVDS_1 = "00ffffffffffff0030e4d3020000000000150103801c1078ea10a59658578f2820505400000001010101010101010101010101010101381d56d45000163030202500159c1000001b000000000000000000000000000000000000000000fe004c4720446973706c61790a2020000000fe004c503132355748322d544c423100f";
+        EDID_DELL = "00ffffffffffff0010ac98a14c4152300b200104b53c22783b5095a8544ea5260f5054a54b00714f8180a9c0a940d1c0e100010101014dd000a0f0703e803020350055502100001a000000ff0033315a444d34330a2020202020000000fc0044454c4c20533237323151530a000000fd00283c89893c010a20202020202001c2020321f15461010203040506071011121415161f20215d5e5f2309070783010000565e00a0a0a029503020350055502100001a00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000fc";
+				CONFIG_DELL = {
+					enable = true;
+					crtc = 1;
+					position = "0x0";
+					mode = "3840x2160";
+					rate = "30.00";
+					gamma = "1.0:0.769:0.556";
+				};
+			  CONFIG_INTERNAL = {
+					enable = true;
+					crtc = 0;
+					position = "0x0";
+					mode = "1366x768";
+					rate = "60.00";
+					gamma = "1.0:0.769:0.556";
+				};
+      }; {
+       "internal+del" = {
+				fingerprint = {
+					"D-P1" = EDID_DELL;
+					"LVDS-1" = EDID_LVDS_1;
+				};
+				config = {
+					"LVDS-1" = CONFIG_INTERNAL // {
+						position = "0x2160";  # below
+						transform = [[1.500000 0.000000 0.000000] [0.000000 1.500000 0.000000] [0.000000 0.000000 1.000000]];
+					};
+					"DP-1" = CONFIG_DELL // {
+						primary = true;
+					};
+				};
+			};
+
+			"del" = {
+				fingerprint = {
+					"DP-1" = EDID_DELL;
+				};
+				config = {
+					"LVDS-1".enable = false;
+					"DP-1" = CONFIG_DELL // {
+						primary = true;
+					};
+				};
+			};
+		};
+    hooks = {
+			postswitch = {
+				"notify-i3" = "${pkgs.i3}/bin/i3-msg restart";
+				"change-dpi" = ''
+					 case "$AUTORANDR_CURRENT_PROFILE" in
+						 default)
+							 DPI=120
+							 ;;
+						 dell)
+							 DPI=200
+							 ;;
+						 *)
+							 echo "Unknown profile: $AUTORANDR_CURRENT_PROFILE"
+							 exit 1
+					 esac
+
+					 echo "Xft.dpi: $DPI" | ${pkgs.xorg.xrdb}/bin/xrdb -merge
+				'';
+			};
+    };
+  };
+
+  programs.vscode = {
+    enable = true;
   };
 
   programs.git = {
@@ -195,6 +284,10 @@ with {
       co = "checkout";
       st = "status";
     };
+  };
+
+  xresources.properties = {
+    "URxvt.perl-ext-common" = "resize-font";
   };
 
   programs.urxvt = {
@@ -222,6 +315,10 @@ with {
   };
 
   programs.taskwarrior = {
+    enable = true;
+  };
+
+  services.dropbox = {
     enable = true;
   };
 
